@@ -89,6 +89,27 @@ npm run preview
 - Node cards display avatars (initials), timestamps, and operation pills so it is easy to scan who performed each step.
 - The sidebar (auth + start panel) stays sticky on large screens, keeping the primary actions within reach while scrolling through long chains.
 
+### Testing
+
+```bash
+npm run test      # single run (Vitest)
+npm run test:watch
+```
+
+## Docker Compose (dev stack)
+
+The repository includes a `docker-compose.yml` that boots MongoDB, the API, and the Vite dev server together:
+
+```powershell
+docker compose up --build
+```
+
+- MongoDB listens on `localhost:27017`.
+- The API is available at `http://localhost:5000`.
+- The Vite dev server is exposed at `http://localhost:5173` and proxies API calls to the server container via `VITE_API_URL=http://server:5000/api`.
+
+Stop everything with `docker compose down` (add `-v` to drop the Mongo volume).
+
 ## Usage Flow
 
 1. **Browse tree anonymously:** Hitting the SPA without login pulls `GET /api/calc` and renders the nested discussion tree.
@@ -110,9 +131,9 @@ npm run preview
 
 ## Deployment Notes & Next Steps
 
-- **Docker Compose:** Recommended future work is to add a docker-compose stack with `server`, `client`, and `mongo` services. API is already configured to read the `mongo` hostname via `MONGO_URI`.
+- **Docker Compose:** The included stack is development-oriented (live reload for the client, compiled server). Consider adding production-optimized images with Nginx for the client if you want to containerize the GitHub Pages build.
 - **Seeding & pagination:** Current implementation focuses on correctness; consider adding seeds and pagination for large trees.
-- **Client tests:** Server integration tests are in place; extending coverage with React Testing Library would be a good follow-up.
+- **Client tests:** React Testing Library + Vitest tests live under `client/src/**/__tests__`. Run them via `npm run test`.
 
 ## GitHub Upload & Pages Deployment
 
